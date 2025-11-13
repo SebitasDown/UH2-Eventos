@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EventDTO {
 
-    private Long id;
-
     @NotBlank(message = "El nombre no puede estar vacio")
     private String name;
 

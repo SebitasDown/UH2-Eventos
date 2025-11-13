@@ -12,11 +12,11 @@ public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    @Mapping(target = "venue", expression = "venueId")
+    @Mapping(target = "venueId", source = "venue.id")
     EventDTO toDTO (Event event);
 
     @Mapping(target = "venue", expression = "java(mapVenue(eventDTO))")
-    Event toEntity(EventDTO eventDTO);
+    Event toModel(EventDTO eventDTO);
 
     default Venue mapVenue(EventDTO eventDTO){
         if (eventDTO == null || eventDTO.getVenueId()== null) return null;

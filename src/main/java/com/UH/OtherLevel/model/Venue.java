@@ -12,4 +12,7 @@ public class Venue {
     private String name;
     private String address;
     private Integer capacity;
+    public Venue(Long id) {
+        this.id = id;
+    }
 }

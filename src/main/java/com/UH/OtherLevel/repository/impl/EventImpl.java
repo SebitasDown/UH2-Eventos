@@ -12,7 +12,7 @@ import java.util.Optional;
 public class EventImpl implements EventRepository {
 
     //Base de datos en memoria
-    private List<Event> events = new ArrayList<>();
+    private List<Event> events;
     private Long IdContador = 1L;
 
     @Override
