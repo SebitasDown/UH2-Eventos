@@ -2,10 +2,12 @@ package com.UH.OtherLevel.controller;
 
 import com.UH.OtherLevel.dto.VenueDTO;
 import com.UH.OtherLevel.mapper.VanueMapper;
+import com.UH.OtherLevel.model.Event;
 import com.UH.OtherLevel.model.Venue;
 import com.UH.OtherLevel.service.EventService;
 import com.UH.OtherLevel.service.VenueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,19 +34,28 @@ public class VanueController {
         return ResponseEntity.ok(venueDTOList);
     }
 
-    @GetMapping("/events/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId (@PathVariable Long id){
+        Venue venue = venueService.findById(id);
+        VenueDTO res = VanueMapper.INSTANCE.toDTO(venue);
 
-
-        return null;
+        return ResponseEntity.ok(res);
     }
 
-    @PutMapping("/events/{id}")
-    public ResponseEntity<?> editarLugar (){
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarLugar (@PathVariable Long id, @RequestBody VenueDTO venueDTO){
+        Venue venue = venueService.update(id, VanueMapper.INSTANCE.toModel(venueDTO));
+
+        return ResponseEntity.ok(VanueMapper.INSTANCE.toDTO(venue));
     }
-    @DeleteMapping("/events/{id}")
-    public ResponseEntity<?> eliminarLugar (){
-        return null;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarLugar (@PathVariable Long id){
+        boolean eliminado = venueService.deleteById(id);
+        if (!eliminado) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró el venue con id: " + id);
+        }
+
+        return ResponseEntity.ok("Evento eliminado");
     }
 }

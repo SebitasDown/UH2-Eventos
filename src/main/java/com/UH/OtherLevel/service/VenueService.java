@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface VenueService {
     Venue create (Venue venue);
-    Venue update (Venue venue);
+    Venue update (Long id, Venue venue);
     List<Venue> getVanueAll ();
     boolean deleteById (Long id);
+    Venue findById (Long id);
 }

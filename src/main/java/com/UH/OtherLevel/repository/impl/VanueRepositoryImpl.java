@@ -44,8 +44,8 @@ public class VanueRepositoryImpl implements VenueRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
-
+    public boolean deleteById(Long id) {
+        return venues.removeIf(e -> e.getId().equals(id));
     }
 
     @Override

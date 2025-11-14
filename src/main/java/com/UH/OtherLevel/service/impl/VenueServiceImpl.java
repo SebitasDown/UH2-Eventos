@@ -21,8 +21,13 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public Venue update(Venue venue) {
-        return null;
+    public Venue update(Long id, Venue venue) {
+        Venue v = venueRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Venue No encontrado"));
+        v.setName(venue.getName());
+        v.setAddress(venue.getAddress());
+        v.setCapacity(venue.getCapacity());
+        return venueRepository.save(v);
     }
 
     @Override
@@ -34,6 +39,12 @@ public class VenueServiceImpl implements VenueService {
 
     @Override
     public boolean deleteById(Long id) {
-        return false;
+        return venueRepository.deleteById(id);
+    }
+
+    @Override
+    public Venue findById(Long id) {
+        return venueRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No encontrado"));
     }
 }

@@ -9,6 +9,6 @@ public interface VenueRepository {
     List<Venue> findAll();
     Optional<Venue> findById(Long id);
     Venue save (Venue venue);
-    void deleteById (Long id);
+    boolean deleteById (Long id);
     boolean existsById(Long id);
 }
