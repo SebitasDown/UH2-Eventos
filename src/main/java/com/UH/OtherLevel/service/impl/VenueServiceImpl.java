@@ -27,7 +27,7 @@ public class VenueServiceImpl implements VenueService {
         v.setName(venue.getName());
         v.setAddress(venue.getAddress());
         v.setCapacity(venue.getCapacity());
-        return venueRepository.save(v);
+        return venueRepository.update(v);
     }
 
     @Override

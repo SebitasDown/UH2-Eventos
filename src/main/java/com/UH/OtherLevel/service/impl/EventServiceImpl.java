@@ -18,6 +18,11 @@ public class EventServiceImpl implements EventService {
     private final VenueRepository venueRepository;
     @Override
     public Event create(Event event) {
+
+
+        if (event.getVenue() == null || event.getVenue().getId() == null) {
+            throw new IllegalArgumentException("El ID del venue no puede ser null");
+        }
         if (event.getName() == null || event.getName().isBlank()){
             throw new IllegalArgumentException("El nombre no puede estar vacio");
         }
@@ -42,7 +47,7 @@ public class EventServiceImpl implements EventService {
         exist.setName(event.getName());
         exist.setDate(event.getDate());
         exist.setVenue(venue);
-        return eventRepository.save(exist);
+        return eventRepository.update(exist);
     }
 
     @Override

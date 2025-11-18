@@ -1,7 +1,14 @@
 package com.UH.OtherLevel.repository.impl;
 
+import com.UH.OtherLevel.entities.EventEntity;
+import com.UH.OtherLevel.mapper.EventEntityMapper;
+import com.UH.OtherLevel.mapper.EventMapper;
 import com.UH.OtherLevel.model.Event;
 import com.UH.OtherLevel.repository.interfaces.EventRepository;
+import com.UH.OtherLevel.repository.jpa.JpaEventRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,49 +16,56 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Primary
+@RequiredArgsConstructor
 public class EventRepositoryImpl implements EventRepository {
 
-    //Base de datos en memoria
-    private List<Event> events = new ArrayList<>();
-    private Long IdContador = 1L;
+    private final JpaEventRepository eventRepository;
 
     @Override
     public List<Event> findAll() {
-        return new ArrayList<>(events);
+        List<EventEntity> entities = eventRepository.findAll();
+        return EventEntityMapper.INSTANCE.toModelList(entities);
     }
 
     @Override
     public Optional<Event> findById(Long id) {
-        return events.stream().filter(e -> e.getId().equals(id)).findFirst();
+        return eventRepository.findById(id)
+                .map(EventEntityMapper.INSTANCE::toModel);
     }
 
     @Override
     public Event save(Event event) {
-        if (event.getId() == null){
-            event.setId(IdContador++);
-            events.add(event);
-        }
-        // Este de aqui actualiza si el id es igual
-        else{
-            events.stream()
-                    .filter(e -> e.getId().equals(event.getId()))
-                    .findFirst()
-                    .ifPresent(existing ->{
-                        existing.setName(event.getName());
-                        existing.setDate(event.getDate());
-                        existing.setVenue(event.getVenue());
-                    });
-        }
-        return event;
+        EventEntity eventEntity = EventEntityMapper.INSTANCE.toEntity(event);
+        EventEntity saved = eventRepository.save(eventEntity);
+        return EventEntityMapper.INSTANCE.toModel(saved);
     }
 
     @Override
     public boolean deleteById(Long id) {
-       return events.removeIf(e -> e.getId().equals(id));
+        if (!eventRepository.existsById(id)){
+            return false;
+        }
+        eventRepository.deleteById(id);
+        return true;
     }
 
     @Override
-    public boolean existById(Long id) {
-        return events.stream().anyMatch(e -> e.getId().equals(id));
+    public Event update(Event event) {
+        if (event.getId()== null){
+            throw new IllegalArgumentException("NOT NULL");
+        }
+        Optional<EventEntity> existingEntity = eventRepository.findById(event.getId());
+        if (existingEntity.isEmpty()) {
+            return null;
+        }
+
+        EventEntity eventEntityUpdate = EventEntityMapper.INSTANCE.toEntity(event);
+
+        EventEntity update = eventRepository.save(eventEntityUpdate);
+
+
+        return EventEntityMapper.INSTANCE.toModel(update);
     }
+
 }

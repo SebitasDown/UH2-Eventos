@@ -1,7 +1,14 @@
 package com.UH.OtherLevel.repository.impl;
 
+import com.UH.OtherLevel.entities.VenueEntity;
+import com.UH.OtherLevel.mapper.EventEntityMapper;
+import com.UH.OtherLevel.mapper.VenueEntityMapper;
 import com.UH.OtherLevel.model.Venue;
 import com.UH.OtherLevel.repository.interfaces.VenueRepository;
+import com.UH.OtherLevel.repository.jpa.JpaVenueRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,47 +16,56 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Primary
+@RequiredArgsConstructor
 public class VanueRepositoryImpl implements VenueRepository {
-    private final List<Venue> venues = new ArrayList<>();
-    private Long idContador = 1L;
+
+    private final JpaVenueRepository vanueRepository;
 
 
     @Override
     public List<Venue> findAll() {
-        return new ArrayList<>(venues);
+        List<VenueEntity> venues = vanueRepository.findAll();
+        return VenueEntityMapper.INSTANCE.toModelList(venues);
     }
 
     @Override
     public Optional<Venue> findById(Long id) {
-        return venues.stream().filter(v -> v.getId().equals(id)).findFirst();
+        return vanueRepository.findById(id)
+                .map(VenueEntityMapper.INSTANCE::toDomain);
     }
 
     @Override
     public Venue save(Venue venue) {
-        if (venue.getId() == null){
-            venue.setId(idContador++);
-            venues.add(venue);
-        }
-        else {
-            venues.stream()
-                    .filter(v -> v.getId().equals(venue.getId()))
-                    .findFirst()
-                    .ifPresent(exist -> {
-                        exist.setName(venue.getName());
-                        exist.setAddress(venue.getAddress());
-                        exist.setCapacity(venue.getCapacity());
-                    });
-        }
-        return venue;
+        VenueEntity entity = VenueEntityMapper.INSTANCE.toEntity(venue);
+
+        VenueEntity saved = vanueRepository.save(entity);
+
+        return VenueEntityMapper.INSTANCE.toDomain(saved);
     }
 
     @Override
     public boolean deleteById(Long id) {
-        return venues.removeIf(e -> e.getId().equals(id));
+        if (!vanueRepository.existsById(id)){
+            return false;
+        }
+
+        vanueRepository.deleteById(id);
+        return true;
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return false;
+    public Venue update(Venue venue) {
+        if (venue.getId() == null){
+            throw new IllegalArgumentException("NOT NULL");
+        }
+
+        VenueEntity entity = VenueEntityMapper.INSTANCE.toEntity(venue);
+
+        VenueEntity update = vanueRepository.save(entity);
+
+        return VenueEntityMapper.INSTANCE.toDomain(update);
     }
+
+
 }
