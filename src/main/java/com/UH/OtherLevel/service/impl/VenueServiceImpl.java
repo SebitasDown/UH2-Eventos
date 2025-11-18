@@ -21,6 +21,11 @@ public class VenueServiceImpl implements VenueService {
         if (venue == null){
             return null;
         }
+        if (venue.getAddress() == null || venue.getAddress().trim().isEmpty() || venue.getCapacity() == null || venue.getCapacity() <= 0){
+            throw new BusinessException("BAD_REQUEST", "Los campos no pueden estar vacios");
+        }
+
+
         return venueRepository.save(venue);
     }
 
@@ -59,6 +64,6 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public Venue findById(Long id) {
         return venueRepository.findById(id)
-                .orElse(null);
+                .orElseThrow(() -> new BusinessException("NOT_FOUND", "El id no fue encontrado"));
     }
 }

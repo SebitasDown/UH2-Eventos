@@ -67,6 +67,9 @@ public class VanueRepositoryImpl implements VenueRepository {
         if (venue.getId() == null){
             throw new BusinessException("BAD_REQUEST","NOT NULL");
         }
+        if (vanueRepository.existsByName(venue.getName())) {
+            throw new BusinessException("CONFLICT", "Ya existe un venue con ese nombre");
+        }
 
         VenueEntity entity = VenueEntityMapper.INSTANCE.toEntity(venue);
 

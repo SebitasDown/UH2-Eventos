@@ -39,6 +39,7 @@ public class VanueController {
         Venue venue = venueService.findById(id);
         VenueDTO res = VanueMapper.INSTANCE.toDTO(venue);
 
+
         return ResponseEntity.ok(res);
 
     }

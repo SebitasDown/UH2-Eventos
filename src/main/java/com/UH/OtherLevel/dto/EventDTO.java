@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EventDTO {
 
+    Long id;
+
     @Schema(
             description = "Nombre oficial del evento",
             example = "Concierto de Temporada"

@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VenueDTO {
 
+    Long id;
+
     @Schema(
             description = "Nombre oficial del lugar",
             example = "Auditorio Central"

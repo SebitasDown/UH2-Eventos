@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JpaVenueRepository extends JpaRepository<VenueEntity, Long> {
     boolean existsByName (String name);
+    boolean existsById (Long id);
 }

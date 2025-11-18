@@ -19,7 +19,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorDTO> handleBusinessException(BusinessException ex){
         ErrorDTO error = new ErrorDTO(ex.getCode(), ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        // Interesante
+        HttpStatus status;
+        switch (ex.getCode()) {
+            case "BAD_REQUEST":
+                status = HttpStatus.BAD_REQUEST;
+                break;
+            case "CONFLICT":
+                status = HttpStatus.CONFLICT;
+                break;
+            case "NOT_FOUND":
+                status = HttpStatus.NOT_FOUND;
+                break;
+            default:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return ResponseEntity.status(status).body(error);
     }
 
     // Error para
