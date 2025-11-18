@@ -19,6 +19,7 @@ public class EventDTO {
             example = "Concierto de Temporada"
     )
     @NotBlank(message = "El nombre no puede estar vacio")
+    @NotNull
     private String name;
 
     @Schema(

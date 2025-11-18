@@ -23,7 +23,13 @@ public class EventController {
     public ResponseEntity<EventDTO> crearEvento (@RequestBody EventDTO eventDTO){
         Event event = eventService.create(EventMapper.INSTANCE.toModel(eventDTO));
         // Mejor practica crear un DTO de respuesta Uno para la peticion y la respuesta
+
+        if (event == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         EventDTO eventCreate = EventMapper.INSTANCE.toDTO(event);
+
+
         // Mejor forma y mas limpia
        /* EventDTO eventCreated2 = EventMapper.INSTANCE.
                 toDTO(eventService.
@@ -35,6 +41,9 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<EventDTO>> obtenerTodosLosEventos (){
         List<Event> events = eventService.getEventAll();
+        if(events == null || events.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
         List<EventDTO> eventDTOList = EventMapper.INSTANCE.toDTOList(events);
         return  ResponseEntity.ok(eventDTOList);
     }
@@ -42,6 +51,7 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId (@PathVariable Long id){
         Event event = eventService.findById(id);
+
         EventDTO eventDTO = EventMapper.INSTANCE.toDTO(event);
         return ResponseEntity.ok(eventDTO);
     }

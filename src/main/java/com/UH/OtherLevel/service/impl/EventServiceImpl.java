@@ -37,6 +37,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event update(Event event) {;
 
+        if (event == null){
+            throw new IllegalArgumentException("Los campos no pueden estar vacios");
+        }
+
         Event exist = eventRepository.findById(event.getId())
                 .orElseThrow(()-> new IllegalArgumentException("Evento no encontrado"));
 
