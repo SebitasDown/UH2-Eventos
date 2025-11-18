@@ -7,6 +7,7 @@ import com.UH.OtherLevel.repository.interfaces.EventRepository;
 import com.UH.OtherLevel.repository.interfaces.VenueRepository;
 import com.UH.OtherLevel.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,9 +57,16 @@ public class EventServiceImpl implements EventService {
         return eventRepository.update(exist);
     }
 
+    // Migracion
+
     @Override
     public List<Event> getEventAll() {
         return eventRepository.findAll();
+    }
+
+    @Override
+    public Page<Event> getEventAll(int page, int size) {
+        return eventRepository.findAll(page,size);
     }
 
     @Override

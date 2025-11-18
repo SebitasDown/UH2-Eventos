@@ -6,6 +6,7 @@ import com.UH.OtherLevel.model.Event;
 import com.UH.OtherLevel.service.EventService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,5 +77,16 @@ public class EventController {
         }
 
         return ResponseEntity.ok("Evento eliminado");
+    }
+
+    // Metodo con pageable
+    @GetMapping("/pageable")
+    public ResponseEntity<Page<EventDTO>> getEvents (
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size){
+
+        Page<Event> events = eventService.getEventAll(page, size);
+        Page<EventDTO> dtoPage = events.map(EventMapper.INSTANCE::toDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(dtoPage);
     }
 }
